@@ -16,3 +16,7 @@ templates
 layout
   basic.html 구현
 
+2024-05-16
+pageable 구현
+list.html 구현
+register.html 구현
