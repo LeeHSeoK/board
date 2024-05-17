@@ -25,9 +25,9 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         QBoard board = QBoard.board;    //Qboard 생성 null이 들어가있는 형태
         JPQLQuery<Board> query = from(board);   //select * from board
         query.where(board.title.contains("3")); //where title에 3 포함하고잇냐?
-        
+
         this.getQuerydsl().applyPagination(pageable, query); //pageable 실행
-        
+
         List<Board> list = query.fetch();       //해당내용 실행은 fetch메서드 (list모양으로 받는다)
         long count = query.fetchCount();
 

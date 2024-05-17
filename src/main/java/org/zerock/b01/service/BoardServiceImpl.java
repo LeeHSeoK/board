@@ -4,13 +4,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Board;
 import org.zerock.b01.dto.BoardDTO;
 import org.zerock.b01.dto.PageRequestDTO;
-import org.zerock.b01.dto.PageResopnseDTO;
+import org.zerock.b01.dto.PageResponseDTO;
 import org.zerock.b01.repository.BoardRepository;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public PageResopnseDTO<BoardDTO> list(PageRequestDTO pageRequestDTO){
+    public PageResponseDTO<BoardDTO> list(PageRequestDTO pageRequestDTO){
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
         Pageable pageable = pageRequestDTO.getPageable("bno");
@@ -64,7 +63,7 @@ public class BoardServiceImpl implements BoardService{
         List<BoardDTO> dtoList = result.getContent().stream().map(board -> modelMapper.map(board, BoardDTO.class))
                 .collect(Collectors.toList());
 
-        return PageResopnseDTO.<BoardDTO>withAll()
+        return PageResponseDTO.<BoardDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(dtoList)
                 .total((int)result.getTotalElements())
