@@ -20,3 +20,8 @@ layout
 pageable 구현
 list.html 구현
 register.html 구현
+
+2024-05-21
+read.html 구현
+modify.html 구현
+BoardController 수정
