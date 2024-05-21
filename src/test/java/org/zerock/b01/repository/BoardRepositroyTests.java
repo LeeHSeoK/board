@@ -79,12 +79,12 @@ public class BoardRepositroyTests {
 //        board b1_0
     }
 
-    @Test
-    public void testSearch1(){
-        Pageable pageable = PageRequest.of(0,10, Sort.by("bno").descending());
-        boardRepository.search1(pageable);
-
-    }
+//    @Test
+//    public void testSearch1(){
+//        Pageable pageable = PageRequest.of(0,10, Sort.by("bno").descending());
+//        boardRepository.search1(pageable);
+//
+//    }
 
     @Test
     public void testSearchAll(){

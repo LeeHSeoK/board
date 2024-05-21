@@ -20,31 +20,55 @@ import org.zerock.b01.service.BoardService;
 @Log4j2
 @RequiredArgsConstructor
 public class BoardController {
-    private final BoardService boardSerivce;
+    private final BoardService boardService;
 
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
-        PageResponseDTO<BoardDTO> resopnseDTO = boardSerivce.list(pageRequestDTO);
-        log.info(resopnseDTO);
-        model.addAttribute("responseDTO",resopnseDTO);
+        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
+        log.info(responseDTO);
+        model.addAttribute("responseDTO", responseDTO);
     }
 
     @GetMapping("/register")
-    public void register(){
+    public void registerGET(){
 
     }
 
-    @PostMapping("/register")   //@Valid DTO에 값이 잘들어갔는지에 대한 결과를 BindingResult에 담는다(정보)
+    @PostMapping("/register")
     public String registerPOST(@Valid BoardDTO boardDTO, BindingResult bindingResult,
                                RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()){
-
-            redirectAttributes.addFlashAttribute("errors",bindingResult.getAllErrors()); //한번 비워주는역할
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             return "redirect:/board/register";
         }
 
-        Long bno = boardSerivce.register(boardDTO);
-        redirectAttributes.addFlashAttribute("result",bno);
+        Long bno = boardService.register(boardDTO);
+        redirectAttributes.addFlashAttribute("result", bno);
         return "redirect:/board/list";
+    }
+
+    @GetMapping({"/read", "/modify"})
+    public void read(Long bno, PageRequestDTO pageRequestDTO, Model model){
+        BoardDTO boardDTO = boardService.readOne(bno);
+        model.addAttribute("dto", boardDTO);
+    }
+
+    @PostMapping("/modify")
+    public String modify(PageRequestDTO pageRequestDTO,
+                         @Valid BoardDTO boardDTO,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes){
+
+        if(bindingResult.hasErrors()){
+            String link = pageRequestDTO.getLink();
+            redirectAttributes.addFlashAttribute("errors",
+                    bindingResult.getAllErrors());
+            redirectAttributes.addAttribute("bno", boardDTO.getBno());
+            return "redirect:/board/modify?"+link;
+        }
+        boardService.modify(boardDTO);
+        redirectAttributes.addFlashAttribute("result", "modified");
+        redirectAttributes.addAttribute("bno", boardDTO.getBno());
+        return "redirect:/board/read";
     }
 }
