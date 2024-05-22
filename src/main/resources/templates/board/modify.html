@@ -79,5 +79,20 @@
         formObj.submit()
     }, false)
 
+    document.querySelector(".removeBtn").addEventListener("click",function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        formObj.action = `/board/delete`
+        formObj.method = 'post'
+        formObj.submit()
+    }, false)
+
+    document.querySelector(".listBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        formObj.reset()
+        self.location=`/board/list?${link}`
+    }, false)
+
 </script>
 </html>
