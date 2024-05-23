@@ -50,9 +50,11 @@
                             <tr th:each="dto:${responseDTO.dtoList}">
                                 <th scope="row">[[${dto.bno}]]</th>
                                 <td>
-                                    <a th:href="|@{/board/read(bno=${dto.bno})}&${link}|">
+                                    <a th:href="|@{/board/read(bno=${dto.bno})}&${link}|" class="text-decoration-none">
                                         [[${dto.title}]]
+                                        <span class="count">[[${dto.replyCount}]]</span>
                                     </a>
+
                                 </td>
                                 <td>[[${dto.writer}]]</td>
                                 <td>[[${#temporals.format(dto.regDate,'yyyy-MM-dd HH:mm')}]]</td>
@@ -87,7 +89,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Modal body text goes here.</p>
+                    <p>Modal body text goes here.[[${result}]]</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -122,6 +124,10 @@
     if(result){
         modal.show()
     }
+
+
+
+
 </script>
 
 </html>
