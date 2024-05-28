@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.b01.dto.ReplyDTO;
 import org.zerock.b01.service.ReplyService;
 
+import java.util.stream.LongStream;
+
 @SpringBootTest
 @Log4j2
 public class ReplyServiceTests {
@@ -22,6 +24,19 @@ public class ReplyServiceTests {
                 .bno(67L)
                 .build();
         log.info(replyService.register(replyDTO)+"입니다.");
+    }
+
+    @Test
+    public void 댓글왕창넣기() {
+        LongStream.rangeClosed(1,100L).forEach(i->{
+            ReplyDTO replyDTO = ReplyDTO.builder()
+                    .bno(97L)
+                    .replyText("replyreply....."+i)
+                    .replyer("replyer"+i%10)
+                    .build();
+            Long rno = replyService.register(replyDTO);
+            log.info(rno);
+        });
     }
 
 }
