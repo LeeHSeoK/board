@@ -35,3 +35,9 @@ ReplyRespository 구현
 BoardSearchImpl searchWithReplyCount method 구현
 test
 ///////////////////////////////////////////
+
+2024-05-24
+ReplyService 구현
+ReplyServiceImpl 구현
+Reply(domain) 수정
+///////////////////////////////////////////
