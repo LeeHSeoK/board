@@ -7,9 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.zerock.b01.domain.Board;
-import org.zerock.b01.domain.QBoard;
-import org.zerock.b01.domain.QReply;
+import org.zerock.b01.domain.*;
+import org.zerock.b01.dto.BoardDTO;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
 
 import java.util.List;
@@ -107,5 +106,6 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         Long count = dtoQuery.fetchCount();
         return new PageImpl<>(dtolist, pageable, count);
     }
+
 
 }

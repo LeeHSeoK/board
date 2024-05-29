@@ -1,0 +1,19 @@
+package org.zerock.b01.domain;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.*;
+
+@Entity
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class User {
+    @Id
+    private String id;
+    private String name;
+    private String password;
+
+}
