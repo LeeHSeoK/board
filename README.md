@@ -50,4 +50,20 @@ read.html 댓글 구현
 2024-05-29
 read.html 댓글 등록 수정 삭제
 login 구현
+///////////////////////////////////////////
+
+2024-05-30
+LoginController
+User Entity
+LoginDTO
+SignUpDTO
+LoginRepository
+LoginService
+LoginServiceImpl
+login.html
+Modifyuserinfo.html
+signup.html
+userinfologin.html
+
+
 
