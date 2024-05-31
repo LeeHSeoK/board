@@ -10863,3 +10863,7 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
     margin-left: -15rem;
   }
 }
+
+.container-fluid>li{
+  margin-left: 10px;
+}

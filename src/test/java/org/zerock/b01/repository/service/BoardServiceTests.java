@@ -22,7 +22,7 @@ public class BoardServiceTests {
         BoardDTO boardDTO = BoardDTO.builder()
                 .title("boardDTO test...")
                 .content("boardDTO test...")
-                .writer("user00")
+                .name("user00")
                 .build();
         Long bno = boardService.register(boardDTO);
         log.info("bno: "+bno);

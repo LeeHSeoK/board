@@ -22,7 +22,7 @@ public class BoardDTO {
     @NotEmpty
     private String content;
     @NotEmpty
-    private String writer;
+    private String name;
     private LocalDateTime regDate;
     private LocalDateTime modDate;
 }

@@ -30,8 +30,9 @@ public class BoardRepositroyTests {
         IntStream.rangeClosed(1, 100).forEach(i -> {
             Board board = Board.builder()
                     .title("title...."+i)
+                    .id("user"+(i%10))
                     .content("content..."+i)
-                    .writer("writer"+(i%10))
+                    .name("name"+(i%10))
                     .build();
             Board result = boardRepository.save(board);
             log.info("BNO: "+result.getBno());

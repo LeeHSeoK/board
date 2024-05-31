@@ -12,7 +12,7 @@
 
 </head>
 <body>
-<form action="/user/modifyuserinfo" method="post">
+<form th:action="@{/user/modifyuserinfo}" method="post">
     <h2>회원정보수정</h2>
 
     <label for="idString">아이디</label>
@@ -40,7 +40,6 @@
         history.replaceState({}, null, null)
         alert(errorMsg)
     }
-
 
     // document.querySelector(".loginUrl").addEventListener("click",function (e){
     //     e.preventDefault()

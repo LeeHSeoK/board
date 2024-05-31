@@ -13,11 +13,11 @@
 
 </head>
 <body>
-<form action="/user/userinfologin" method="post" id="f1">
+<form th:action="@{/user/userinfologin}" method="post" id="f1">
     <h2>마이페이지</h2>
 
     <label for="idString">아이디</label>
-    <input type="text" name="id" id="idString" th:value="${userInfoId}" placeholder="[[${userInfoId}]]" readonly><br><br>
+    <input type="text" name="id" id="idString" th:value="${loginSession.id}" readonly><br><br>
 
     <label for="passwordString">비밀번호</label>
     <input type="password" name="password" id="passwordString" required><br><br>

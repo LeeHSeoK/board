@@ -50,7 +50,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
                         booleanBuilder.or(board.content.contains(keyword));
                         break;
                     case "w":
-                        booleanBuilder.or(board.writer.contains(keyword));
+                        booleanBuilder.or(board.name.contains(keyword));
                         break;
                 }
             }
@@ -85,7 +85,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
                         booleanBuilder.or(board.content.contains(keyword));
                         break;
                     case "w":
-                        booleanBuilder.or(board.writer.contains(keyword));
+                        booleanBuilder.or(board.name.contains(keyword));
                         break;
                 }
             }
@@ -97,7 +97,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
                 bean(BoardListReplyCountDTO.class,
                         board.bno,
                         board.title,
-                        board.writer,
+                        board.name,
                         board.regDate,
                         reply.count().as("replyCount")));
 

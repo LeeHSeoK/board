@@ -1,10 +1,9 @@
-package org.zerock.b01.Controller.advice;
+package org.zerock.b01.controller.advice;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import org.springframework.validation.BindException;

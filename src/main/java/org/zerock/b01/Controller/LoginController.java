@@ -1,4 +1,4 @@
-package org.zerock.b01.Controller;
+package org.zerock.b01.controller;
 
 
 import jakarta.servlet.http.HttpSession;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.dto.LoginDTO;
+import org.zerock.b01.dto.SessionDTO;
 import org.zerock.b01.dto.SignUpDTO;
 import org.zerock.b01.service.LoginService;
 
@@ -19,6 +20,7 @@ import org.zerock.b01.service.LoginService;
 public class LoginController {
 
     private final LoginService loginService;
+    private  SessionDTO sessionDTO;
 
     @GetMapping("/user/login")
     public void login() {
@@ -34,8 +36,11 @@ public class LoginController {
         }
 
         if(loginService.login(loginDTO)){
-
-            session.setAttribute("loginSession", loginDTO.getId());
+            SessionDTO sessionDTO = new SessionDTO();
+            SignUpDTO signUpDTO = loginService.searchOne(loginDTO.getId());
+            sessionDTO.setId(signUpDTO.getId());
+            sessionDTO.setName(signUpDTO.getName());
+            session.setAttribute("loginSession", sessionDTO);
 
             return "redirect:/board/list";
         }
@@ -71,8 +76,8 @@ public class LoginController {
 
     @GetMapping("/user/userinfologin")
     public void userInfoLogin(HttpSession session, Model model) {
-        Object loginSession = session.getAttribute("loginSession");
-        model.addAttribute("userInfoId", loginSession);
+        SessionDTO loginSession = (SessionDTO) session.getAttribute("loginSession");
+        model.addAttribute("loginSession", loginSession);
 
     }
 
@@ -90,8 +95,8 @@ public class LoginController {
     @GetMapping("user/modifyuserinfo")
     public String modifyCheckuserinfo(HttpSession session, Model model) {
 
-        String loginId = (String) session.getAttribute("loginSession");
-        SignUpDTO signUpDTO = loginService.searchOne(loginId);
+        SessionDTO loginId = (SessionDTO) session.getAttribute("loginSession");
+        SignUpDTO signUpDTO = loginService.searchOne(loginId.getId());
         model.addAttribute("userInfoId", signUpDTO);
         return "/user/modifyuserinfo";
     }
@@ -103,28 +108,38 @@ public class LoginController {
         if(bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 
-            return "redirect:/user/logout";
+            return "redirect:/user/modifyuserinfo";
         }
 
         else {
-            loginService.modify(signUpDTO);
             redirectAttributes.addFlashAttribute("complete", "정보가 수정되었습니다. 재 로그인 해주세요");
-            return "redirect:/user/login";
+            loginService.modify(signUpDTO);
+            return "redirect:/user/logout";
         }
 
     }
 
-    @PostMapping("/user/logout")
-    public String logout(HttpSession session) {
+    @GetMapping("/user/logout")
+    public String logout(HttpSession session, Model model) {
         // 세션에서 로그인 ID 삭제
-        session.removeAttribute("loginSession");
-
+//        session.removeAttribute("loginSession");
         // 세션 무효화 (옵션)
         session.invalidate();
-
+        model.addAttribute("complete", "정보가 수정되었습니다. 재 로그인 해주세요");
         // 로그아웃 후 로그인 페이지로 리다이렉트
-        return "redirect:/board/list";
+        return "/user/logout";
     }
+
+//    @PostMapping("/user/logout")
+//    public String logout(HttpSession session) {
+//
+//        // 세션에서 로그인 ID 삭제
+////        session.removeAttribute("loginSession");
+//        // 세션 무효화 (옵션)
+//        session.invalidate();
+//        // 로그아웃 후 로그인 페이지로 리다이렉트
+//        return "redirect:/board/list";
+//    }
 
 }
 
