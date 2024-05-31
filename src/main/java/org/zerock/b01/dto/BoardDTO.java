@@ -16,9 +16,14 @@ import java.time.LocalDateTime;
 public class BoardDTO {
     private long bno;
 
+
     @NotEmpty
     @Size(min = 3, max = 10)
     private String title;
+
+    @NotEmpty
+    private String id;
+
     @NotEmpty
     private String content;
     @NotEmpty
