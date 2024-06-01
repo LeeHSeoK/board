@@ -29,7 +29,7 @@ public class PageResopnseDTO<E> {       //여러종류의 데이터를 주고받
             return;
         }
         this.page = pageRequestDTO.getPage();
-        this.size = pageRequestDTO.getPageSize();
+        this.size = pageRequestDTO.getSize();
         this.total = total;
         this.dtoList = dtoList;
 

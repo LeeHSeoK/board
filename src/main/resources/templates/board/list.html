@@ -36,8 +36,11 @@
                     Board List
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">Board List</h5>
-                    <button type="button" onclick="window.location.href='/board/register'" class="btn btn-outline-secondary registerBtn">Register</button>
+                    <div>
+                        <span>Board List</span>
+                        <button type="button" style="float:right" class="btn btn-outline-secondary registerBtn">Register</button>
+                    </div>
+
                     <table class="table">
                         <thead>
                         <tr>
@@ -125,6 +128,18 @@
     if(result){
         modal.show()
     }
+
+    const reigster = [[${loginSession}]]
+    document.querySelector(".registerBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        if(reigster){
+            window.location.href='/board/register'
+        }
+        else{
+            window.location.href='/user/login'
+        }
+    })
 
 </script>
 

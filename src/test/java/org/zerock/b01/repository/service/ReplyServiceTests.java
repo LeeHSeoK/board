@@ -20,7 +20,7 @@ public class ReplyServiceTests {
     public void testRegister(){
         ReplyDTO replyDTO = ReplyDTO.builder()
                 .replyText("replyreply....")
-                .replyer("re01")
+                .name("re01")
                 .bno(67L)
                 .build();
         log.info(replyService.register(replyDTO)+"입니다.");
@@ -30,9 +30,10 @@ public class ReplyServiceTests {
     public void 댓글왕창넣기() {
         LongStream.rangeClosed(1,100L).forEach(i->{
             ReplyDTO replyDTO = ReplyDTO.builder()
-                    .bno(97L)
+                    .bno(99L)
                     .replyText("replyreply....."+i)
-                    .replyer("replyer"+i%10)
+                    .name("name"+i%10)
+                    .id("user"+i%10)
                     .build();
             Long rno = replyService.register(replyDTO);
             log.info(rno);

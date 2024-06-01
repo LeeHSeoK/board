@@ -20,8 +20,9 @@ public class Reply extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)//다대 일 내가 기준으로 내가 많으니까 다 board는 하나니까 일
     private Board board;
 
+    private String id;
     private String replyText;
-    private String replyer;
+    private String name;
 
     public void changeText(String Text){
         this.replyText = Text;

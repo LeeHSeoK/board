@@ -28,13 +28,10 @@
                 <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
                 <div>
                     <a th:if="${loginSession != null}" th:href="@{/user/logout}"  type="button" class="btn btn-danger me-1">Sign Out</a>
+                    <a th:if="${loginSession != null}" th:href="@{/user/userinfologin}"  type="button" class="btn btn-outline-secondary">회원정보</a>
                     <a th:unless="${loginSession != null}" th:href="@{/user/login}" type="button" class="btn btn-primary me-1">Sign In</a>
                 </div>
 
-                <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-
-
-                </ul>
             </div>
         </nav>
         <div class="container-fluid" layout:fragment="content">

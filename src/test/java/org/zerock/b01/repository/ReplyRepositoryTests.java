@@ -33,7 +33,7 @@ public class ReplyRepositoryTests {
             Reply reply = Reply.builder()
                     .board(board)
                     .replyText("댓글..."+i)
-                    .replyer("replyer..."+i)
+                    .name("name..."+i)
                     .build();
             replyRepository.save(reply);
         });

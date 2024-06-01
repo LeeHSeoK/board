@@ -3,6 +3,8 @@ package org.zerock.b01.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -22,6 +24,10 @@ public class Board extends BaseEntity{
     private String content;
     @Column(length=500, nullable=false)
     private String name;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Reply> replies;
 
     public void change(String title, String content){
         this.title = title;

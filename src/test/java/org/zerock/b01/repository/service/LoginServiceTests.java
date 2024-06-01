@@ -21,8 +21,8 @@ public class LoginServiceTests {
     public void signup() {
         LongStream.rangeClosed(1,10L).forEach(i->{
           SignUpDTO signUpDTO = SignUpDTO.builder()
-                .id("user"+i)
-                .name("name"+i)
+                .id("user"+i%10)
+                .name("name"+i%10)
                 .password("12341234")
                 .build();
         loginService.register(signUpDTO);

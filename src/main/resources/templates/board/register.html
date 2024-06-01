@@ -16,6 +16,7 @@
                 </div>
                 <div class="card-body">
                     <form action="/board/register" method="post">
+                            <input type="text" name="id" class="form-control" th:value="${userInfo.id}" hidden>
                         <div class="input-group mb-3">
                             <span class="input-group-text">Title</span>
                             <input type="text" name="title" class="form-control" placeholder="Title">
@@ -28,7 +29,7 @@
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">Writer</span>
-                            <input type="text" name="name" class="form-control" placeholder="name">
+                            <input type="text" name="name" class="form-control" th:value="${userInfo.name}" readonly>
                         </div>
 
 

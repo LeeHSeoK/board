@@ -10,9 +10,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.service.BoardService;
+import org.zerock.b01.service.LoginService;
 
 @Controller
 @RequestMapping("/board")
@@ -20,29 +22,21 @@ import org.zerock.b01.service.BoardService;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final LoginService loginService;
 
     @GetMapping("list")
     public void list(PageRequestDTO pageRequestDTO, Model model, HttpSession session) {
         PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardService.listWithReplyCount(pageRequestDTO);
-//        log.info(responseDTO);
         model.addAttribute("responseDTO", responseDTO);
-//
-        SessionDTO loginSession = (SessionDTO) session.getAttribute("loginSession");
-        model.addAttribute("loginSession", loginSession);
+
 
     }
 
-//    @GetMapping("/list")
-//    public void list(PageRequestDTO pageRequestDTO, Model model){
-//        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
-//        log.info(responseDTO);
-//        model.addAttribute("responseDTO", responseDTO);
-//    }
-
     @GetMapping("/register")
     public void registerGET(HttpSession session, Model model){
-//        SessionDTO loginSession = (SessionDTO) session.getAttribute("loginSession");
-//        model.addAttribute("loginSession", loginSession);
+        String loginSession = (String) session.getAttribute("loginSession");
+        SignUpDTO signUpDTO = loginService.searchOne(loginSession);
+        model.addAttribute("userInfo", signUpDTO);
     }
 
     @PostMapping("/register")
@@ -59,11 +53,10 @@ public class BoardController {
     }
 
     @GetMapping({"/read", "/modify"})
-    public void read(Long bno, PageRequestDTO pageRequestDTO, Model model, HttpSession session){
+    public void read(@RequestParam("bno")Long bno, PageRequestDTO pageRequestDTO, Model model, HttpSession session){
         BoardDTO boardDTO = boardService.readOne(bno);
         model.addAttribute("dto", boardDTO);
-        SessionDTO loginSession = (SessionDTO) session.getAttribute("loginSession");
-        model.addAttribute("loginSession", loginSession);
+
     }
 
     @PostMapping("/modify")
@@ -86,7 +79,7 @@ public class BoardController {
     }
 
     @PostMapping("/delete")
-    public String delete(Long bno, RedirectAttributes redirectAttributes){
+    public String delete(@RequestParam("bno")Long bno, RedirectAttributes redirectAttributes){
         boardService.remove(bno);
         redirectAttributes.addFlashAttribute("result", "deleted");
         return "redirect:/board/list";
