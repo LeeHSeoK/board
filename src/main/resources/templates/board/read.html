@@ -89,7 +89,11 @@
                         </div>
                         <div class="input-group mb-3" >
                             <span class="input-group-text">name</span>
-                            <input type="text" class="form-control name">
+                            <input type="text" class="form-control name" th:value="${userName}" readonly>
+                        </div>
+                        <div class="input-group mb-3" >
+                            <span class="input-group-text">id</span>
+                            <input type="text" class="form-control replyRegisterLoginSession" th:value="${loginSession}" readonly>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -111,9 +115,11 @@
                         <div class="input-group mb-3">
                             <span class="input-group-text">Modify Text</span>
                             <input type="text" class="form-control modifyText" >
+                            <input type="text" id="loginSession" th:sessiondata="${loginSession}" hidden>
+                            <!-- session값 받아서 비교할때 사용하기 -->
                         </div>
                     </div>
-                    <div th:if="${loginSession eq dto.id}" class="modal-footer">
+                    <div id="modalFooter" class="modal-footer">
                         <button type="button" class="btn btn-primary modifyBtn">Modify</button>
                         <button type="button" class="btn btn-danger removeBtn">Delete</button>
 <!--                        <button type="button" class="btn btn-outline-dark closeModifyBtn" >Close</button>-->
@@ -184,12 +190,19 @@
     //댓글모달 DOM 객체변수
     const replyText = document.querySelector('.replyText')
     const name = document.querySelector('.name')
+    const id = document.querySelector('.replyRegisterLoginSession')
+
     const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"))
     const registerBtn = document.querySelector(".registerBtn")
     // const closeRegisterBtn = document.querySelector(".closeRegisterBtn")
 
     document.querySelector(".addReplyBtn").addEventListener("click", function (e){
-        registerModal.show()
+        if(name.value){
+            registerModal.show()
+        }else{
+            const currentUrl = window.location.href;
+            self.location = `/user/login?redirectURL=${encodeURIComponent(currentUrl)}`;
+        }
     },false)
 
     // closeRegisterBtn.addEventListener("click", function (e){
@@ -197,7 +210,7 @@
     // },false)
 
     registerBtn.addEventListener("click", function (e){
-        const replyObj = {bno:bno, replyText:replyText.value, name:name.value}
+        const replyObj = {bno:bno, replyText:replyText.value, name:name.value, id:id.value}
         addReply(replyObj).then(result=>{
             alert(result.rno)
             registerModal.hide()
@@ -230,8 +243,13 @@
     const modifyText = document.querySelector(".modifyText")
     const modifyBtn = document.querySelector(".modifyBtn")
     const removeBtn = document.querySelector(".removeBtn")
-    const closeModifyBtn = document.querySelector(".closeModifyBtn")
+    // const closeModifyBtn = document.querySelector(".closeModifyBtn")
     const replyHeader = document.querySelector('.replyHeader')
+    //session을 js에서 쓰게 받아오기
+    const loginSession = document.getElementById('loginSession').getAttribute('sessiondata');
+    const modalFooter = document.getElementById('modalFooter');
+
+    // const idText = document.querySelector('.idText')
 
 
     replyList.addEventListener("click", function (e){
@@ -252,6 +270,13 @@
             modifyText.value = reply.replyText
             modifyModal.show()
 
+            //reply.id에 값과 위에 세션값이 일치하면 modalFooter출력
+            if (reply.id === loginSession) {
+                modalFooter.style.display = 'flex';
+            } else {
+                modalFooter.style.display = 'none';
+            }
+
         }).catch(e=>alert('error'))
     },false)
 
@@ -266,11 +291,13 @@
         }).catch(e=>{console.log(e)})
     }, false)
 
-    closeModifyBtn.addEventListener("click",function (e){
-        modifyModal.hide()
-    }, false)
+    // closeModifyBtn.addEventListener("click",function (e){
+    //     modifyModal.hide()
+    // }, false)
 
     removeBtn.addEventListener("click", function (e){
+        e.stopPropagation()
+
         removeReply(replyHeader.innerHTML).then(result=>{
             alert(result.rno+'삭제됨')
             replyText.value=''
@@ -280,7 +307,14 @@
         }).catch(e=>{console.log(e)})
     })
 
-
-
+    // name.addEventListener("click", function (e){
+    //     e.stopPropagation()
+    //     e.preventDefault()
+    //
+    //     if(name == null){
+    //         window.location.href='/user/login'
+    //     }
+    //
+    // })
 </script>
 </html>

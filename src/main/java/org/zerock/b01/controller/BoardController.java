@@ -1,5 +1,6 @@
-package org.zerock.b01.controller;
+package org.zerock.b01.Controller;
 
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +57,17 @@ public class BoardController {
     public void read(@RequestParam("bno")Long bno, PageRequestDTO pageRequestDTO, Model model, HttpSession session){
         BoardDTO boardDTO = boardService.readOne(bno);
         model.addAttribute("dto", boardDTO);
+        String loginSession = (String) session.getAttribute("loginSession");
 
+
+        if(loginSession != null){
+            SignUpDTO signUpDTO = loginService.searchOne(loginSession);
+            model.addAttribute("userName", signUpDTO.getName());
+            log.info(signUpDTO.toString()+"========================");
+        }
+        else{
+            model.addAttribute("userName", "");
+        }
     }
 
     @PostMapping("/modify")

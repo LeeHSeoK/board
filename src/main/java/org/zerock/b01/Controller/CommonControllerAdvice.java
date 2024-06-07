@@ -1,4 +1,4 @@
-package org.zerock.b01.controller;
+package org.zerock.b01.Controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ public class CommonControllerAdvice {
 
     @ModelAttribute("loginSession")
     public String addLoginSessionToModel(HttpSession session) {
+
         return (String) session.getAttribute("loginSession");
     }
 }

@@ -1,14 +1,16 @@
-package org.zerock.b01.controller;
+package org.zerock.b01.Controller;
 
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.dto.LoginDTO;
 //import org.zerock.b01.dto.SessionDTO;
@@ -20,7 +22,6 @@ import org.zerock.b01.service.LoginService;
 public class LoginController {
 
     private final LoginService loginService;
-//    private  SessionDTO sessionDTO;
 
     @GetMapping("/user/login")
     public void login() {
@@ -28,7 +29,8 @@ public class LoginController {
     }
 
     @PostMapping("/user/login")
-    public String logincheck(@Valid LoginDTO loginDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session){
+    public String logincheck(@Valid LoginDTO loginDTO, BindingResult bindingResult,
+                             RedirectAttributes redirectAttributes, HttpSession session , @RequestParam String redirectURL){
 
         if(bindingResult.hasErrors() || !(loginService.login(loginDTO))) {
             redirectAttributes.addFlashAttribute("message", "아이디 혹은 비밀번호가 잘못되었습니다.");
@@ -36,13 +38,13 @@ public class LoginController {
         }
 
         if(loginService.login(loginDTO)){
-//            SessionDTO sessionDTO = new SessionDTO();
             SignUpDTO signUpDTO = loginService.searchOne(loginDTO.getId());
-//            sessionDTO.setId(signUpDTO.getId());
-//            sessionDTO.setName(signUpDTO.getName());
             session.setAttribute("loginSession", signUpDTO.getId());
-
-            return "redirect:/board/list";
+            if(redirectURL != null && !redirectURL.isEmpty()){
+                return "redirect:" + redirectURL;
+            }else{
+                return "redirect:/board/list";
+            }
         }
 
         return "/user/login";
