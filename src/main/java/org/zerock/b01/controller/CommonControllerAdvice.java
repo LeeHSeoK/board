@@ -1,4 +1,4 @@
-package org.zerock.b01.Controller;
+package org.zerock.b01.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

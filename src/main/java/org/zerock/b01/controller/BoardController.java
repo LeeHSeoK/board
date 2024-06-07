@@ -1,6 +1,5 @@
-package org.zerock.b01.Controller;
+package org.zerock.b01.controller;
 
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
