@@ -29,8 +29,9 @@ public class Board extends BaseEntity{
     @ToString.Exclude
     private List<Reply> replies;
 
-    public void change(String title, String content){
+    public void change(String title, String content, String name){
         this.title = title;
         this.content = content;
+        this.name = name;
     }
 }

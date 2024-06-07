@@ -54,7 +54,7 @@ public class BoardRepositroyTests {
         Long bno = 10L;
         Optional<Board> result = boardRepository.findById(bno);
         Board board = result.orElseThrow();
-        board.change("update...title","update...content");
+        board.change("update...title","update...content","update..name");
         boardRepository.save(board);
     }
 

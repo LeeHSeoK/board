@@ -62,7 +62,6 @@ public class BoardController {
         if(loginSession != null){
             SignUpDTO signUpDTO = loginService.searchOne(loginSession);
             model.addAttribute("userName", signUpDTO.getName());
-            log.info(signUpDTO.toString()+"========================");
         }
         else{
             model.addAttribute("userName", "");
