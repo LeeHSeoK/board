@@ -19,6 +19,7 @@ public class Reply extends BaseEntity {
     //fetch = FetchType.EAGER = 일대 다일때 사용한다.
     @ManyToOne(fetch = FetchType.LAZY)//다대 일 내가 기준으로 내가 많으니까 다 board는 하나니까 일
     private Board board;
+    //board가 필요할때만 열어서 확인하겠다.(reply에서 등록이나 삭제할때 bno써야하는데 그럴때만 사용하겠다 = LAZY)
 
     private String id;
     private String replyText;
