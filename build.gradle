@@ -57,6 +57,7 @@ dependencies {
 
     implementation 'org.springframework.session:spring-session-core'    //session
 
+    implementation 'net.coobird:thumbnailator:0.4.16'
 }
 
 tasks.named('test') {
