@@ -13,7 +13,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "imageSet")
+@ToString(exclude = {"imageSet","replies"})
+//@ToString
 public class Board extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //primarykey로 쓰겠다(auto Increasement). identity,sequence,table,auto
@@ -33,7 +34,6 @@ public class Board extends BaseEntity{
     private Set<BoardImage> imageSet = new HashSet<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ToString.Exclude
     @BatchSize(size=20)
     private List<Reply> replies;
 

@@ -1,5 +1,6 @@
 package org.zerock.b01.repository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
 import org.zerock.b01.domain.Board;
-import org.zerock.b01.domain.Reply;
+import org.zerock.b01.domain.BoardImage;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -124,5 +127,54 @@ public class BoardRepositroyTests {
         result.getContent().forEach(board -> log.info(board));
     }
 
+    @Test
+    public void testInsertWithImage(){
+        Board board = Board.builder()
+                .id("tester01")
+                .title("Image test")
+                .content("첨부파일 테스트")
+                .name("tester01")
+                .build();
 
+        for(int i=0; i<3; i++){
+            board.addImage(UUID.randomUUID().toString(), "file"+i+".jpg");
+
+        }
+
+        boardRepository.save(board);
+    }
+
+    @Test
+    public void testReadWithImage(){
+        Optional<Board> result = boardRepository.findByIdWithImages(102L);
+        Board board = result.orElseThrow();
+
+        log.info(board);
+        for(BoardImage boardImage : board.getImageSet()){
+            log.info(boardImage);
+        }
+    }
+
+    @Test
+    public void testModifyImage(){
+        Optional<Board> result = boardRepository.findByIdWithImages(97L);
+        Board board = result.orElseThrow();
+        //기존 첨부파일을 삭제
+        board.clearImage();
+        //새로운 첨부파일 등록
+        for(int i=0; i<2; i++){
+            board.addImage(UUID.randomUUID().toString(), "updateFile"+i+".jpg");
+        }
+
+        boardRepository.save(board);
+    }
+
+    @Test
+    @Transactional
+    @Commit
+    public void testRemoveAll(){
+        Long bno = 98L;
+        replyRepository.deleteByBoard_Bno(bno);
+        boardRepository.deleteById(bno);
+    }
 }

@@ -1,6 +1,7 @@
 package org.zerock.b01.repository.search;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
@@ -9,12 +10,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.BoardDTO;
+import org.zerock.b01.dto.BoardImageDTO;
+import org.zerock.b01.dto.BoardListAllDTO;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardSearch{
-    public BoardSearchImpl(){
+public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardSearch {
+    public BoardSearchImpl() {
         super(Board.class);
     }
 
@@ -35,13 +39,13 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 //    }
 
     @Override
-    public Page<Board> searchAll(String[] types, String keyword, Pageable pageable){
+    public Page<Board> searchAll(String[] types, String keyword, Pageable pageable) {
         QBoard board = QBoard.board;
         JPQLQuery<Board> query = from(board);
 
-        if((types != null && types.length>0) && keyword != null){
+        if ((types != null && types.length > 0) && keyword != null) {
             BooleanBuilder booleanBuilder = new BooleanBuilder();
-            for(String type: types){
+            for (String type : types) {
                 switch (type) {
                     case "t":
                         booleanBuilder.or(board.title.contains(keyword));
@@ -66,7 +70,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
     }
 
     @Override
-    public Page<BoardListReplyCountDTO> searchWithReplyCount(String[] types, String keyword, Pageable pageable){
+    public Page<BoardListReplyCountDTO> searchWithReplyCount(String[] types, String keyword, Pageable pageable) {
         QBoard board = QBoard.board;
         QReply reply = QReply.reply;
 
@@ -74,9 +78,9 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         query.leftJoin(reply).on(reply.board.eq(board));
         query.groupBy(board);
 
-        if((types != null && types.length>0) && keyword != null){
+        if ((types != null && types.length > 0) && keyword != null) {
             BooleanBuilder booleanBuilder = new BooleanBuilder();
-            for(String type: types){
+            for (String type : types) {
                 switch (type) {
                     case "t":
                         booleanBuilder.or(board.title.contains(keyword));
@@ -107,5 +111,67 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         return new PageImpl<>(dtolist, pageable, count);
     }
 
+    @Override
+    public Page<BoardListAllDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+        QBoard board = QBoard.board;
+        QReply reply = QReply.reply;
+
+        JPQLQuery<Board> query = from(board);   //board에서 select해온다.
+        query.leftJoin(reply).on(reply.board.eq(board));
+        query.groupBy(board);
+
+        if ((types != null && types.length > 0) && keyword != null) {
+            BooleanBuilder booleanBuilder = new BooleanBuilder();
+            for (String type : types) {
+                switch (type) {
+                    case "t":
+                        booleanBuilder.or(board.title.contains(keyword));
+                        break;
+                    case "c":
+                        booleanBuilder.or(board.content.contains(keyword));
+                        break;
+                    case "w":
+                        booleanBuilder.or(board.name.contains(keyword));
+                        break;
+                }
+            }
+            query.where(booleanBuilder);
+        }
+//        query.where(board.bno.gt(0L));
+        query.groupBy(board);
+
+        getQuerydsl().applyPagination(pageable, query);
+
+        JPQLQuery<Tuple> tupleJPQLQuery = query.select(board, reply.countDistinct());
+
+        List<Tuple> tupleList = tupleJPQLQuery.fetch();
+
+        List<BoardListAllDTO> dtoList = tupleList.stream().map(tuple -> {
+            Board board1 = (Board) tuple.get(board);
+            long replyCount = tuple.get(1, Long.class);
+            BoardListAllDTO dto = BoardListAllDTO.builder()
+                    .bno(board1.getBno())
+                    .title(board1.getTitle())
+                    .name(board1.getName())
+                    .regDate(board1.getRegDate())
+                    .replyCount(replyCount)
+                    .build();
+            //BoardImage를 BoardImageDTO로 처리
+            List<BoardImageDTO> imageDTOS = board1.getImageSet().stream().sorted()
+                    .map(boardImage -> BoardImageDTO.builder().uuid(boardImage.getUuid())
+                            .fileName(boardImage.getFileName())
+                            .ord(boardImage.getOrd())
+                            .build())
+                    .collect(Collectors.toList());
+            dto.setBoardImages(imageDTOS);
+            return dto;
+
+        }).collect(Collectors.toList());
+
+        long totalCount = query.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, totalCount);
+
+    }
 
 }
