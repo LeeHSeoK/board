@@ -28,7 +28,6 @@ public class UpDownController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<UploadResultDTO> upload(UploadFileDTO uploadFileDTO) {
         if (uploadFileDTO.getFiles() != null) {
-
             final List<UploadResultDTO> list = new ArrayList<>();
 
             uploadFileDTO.getFiles().forEach(multipartFile -> {

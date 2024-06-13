@@ -169,12 +169,12 @@ public class BoardRepositroyTests {
         boardRepository.save(board);
     }
 
-    @Test
-    @Transactional
-    @Commit
-    public void testRemoveAll(){
-        Long bno = 98L;
-        replyRepository.deleteByBoard_Bno(bno);
-        boardRepository.deleteById(bno);
-    }
+//    @Test
+//    @Transactional
+//    @Commit
+//    public void testRemoveAll(){
+//        Long bno = 98L;
+//        replyRepository.deleteByBoard_Bno(bno);
+//        boardRepository.deleteById(bno);
+//    }
 }

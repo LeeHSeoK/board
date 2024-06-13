@@ -4,6 +4,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,19 +19,26 @@ import org.zerock.b01.dto.*;
 import org.zerock.b01.service.BoardService;
 import org.zerock.b01.service.LoginService;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.List;
+
 @Controller
 @RequestMapping("/board")
 @Log4j2
 @RequiredArgsConstructor
 public class BoardController {
+
+    @Value("${org.zerock.upload.path}")
+    private String uploadPath;
+
     private final BoardService boardService;
     private final LoginService loginService;
 
     @GetMapping("list")
-    public void list(PageRequestDTO pageRequestDTO, Model model, HttpSession session) {
-        PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardService.listWithReplyCount(pageRequestDTO);
+    public void list(PageRequestDTO pageRequestDTO, Model model) {
+        PageResponseDTO<BoardListAllDTO> responseDTO = boardService.listWithAll(pageRequestDTO);
         model.addAttribute("responseDTO", responseDTO);
-
 
     }
 
@@ -81,16 +91,42 @@ public class BoardController {
             redirectAttributes.addAttribute("bno", boardDTO.getBno());
             return "redirect:/board/modify?"+link;
         }
+
         boardService.modify(boardDTO);
         redirectAttributes.addFlashAttribute("result", "modified");
         redirectAttributes.addAttribute("bno", boardDTO.getBno());
         return "redirect:/board/read";
     }
-
+//    @RequestParam("bno")Long bno
     @PostMapping("/delete")
-    public String delete(@RequestParam("bno")Long bno, RedirectAttributes redirectAttributes){
+    public String delete(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
+
+        Long bno = boardDTO.getBno();
         boardService.remove(bno);
+
+        //게시물이 삭제되었고 첨부파일 삭제
+        List<String> fileNames = boardDTO.getFileNames();
+        if(fileNames != null && fileNames.size()>0){
+            removeFiles(fileNames);
+        }
         redirectAttributes.addFlashAttribute("result", "deleted");
         return "redirect:/board/list";
+    }
+
+    public void removeFiles(List<String> fileNames){
+        for(String fileName : fileNames){
+            Resource resource = new FileSystemResource(uploadPath + File.separator+fileName);
+
+            try{
+                String contentType = Files.probeContentType(resource.getFile().toPath());
+                resource.getFile().delete();
+                if(contentType.startsWith("image")){
+                    File thumbnailFile = new File(uploadPath + File.separator+"s_"+fileName);
+                    thumbnailFile.delete();
+                }
+            }catch (Exception e){
+                log.error(e.getMessage());
+            }
+        }
     }
 }

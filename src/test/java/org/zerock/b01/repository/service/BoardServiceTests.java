@@ -9,6 +9,9 @@ import org.zerock.b01.dto.PageRequestDTO;
 import org.zerock.b01.dto.PageResponseDTO;
 import org.zerock.b01.service.BoardService;
 
+import java.util.Arrays;
+import java.util.UUID;
+
 @Log4j2
 @SpringBootTest
 public class BoardServiceTests {
@@ -49,5 +52,37 @@ public class BoardServiceTests {
                 .build();
         PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
         log.info(responseDTO);
+    }
+
+    @Test
+    public void testRegisterWithImages(){
+        log.info(boardService.getClass().getName());
+
+        BoardDTO boardDTO = BoardDTO.builder()
+                .title("file test...")
+                .content("file sample test...")
+                .name("user1")
+                .id("user1")
+                .build();
+        boardDTO.setFileNames(
+                Arrays.asList(
+                        UUID.randomUUID()+"_aaa.jpg",
+                        UUID.randomUUID()+"_bbb.jpg",
+                        UUID.randomUUID()+"_ccc.jpg"
+                )
+        );
+        Long bno = boardService.register(boardDTO);
+        log.info("bno: "+bno);
+    }
+
+    @Test
+    public void testReadOne(){
+        Long bno = 104L;
+
+        BoardDTO boardDTO = boardService.readOne(bno);
+        log.info(boardDTO);
+        for(String fileName : boardDTO.getFileNames()){
+            log.info(fileName);
+        }
     }
 }
